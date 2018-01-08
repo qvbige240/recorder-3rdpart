@@ -12,6 +12,8 @@ export jansson_SRC=${WORKDIR}/jansson-2.10
 export curl_SRC=${WORKDIR}/curl-7.52.1
 export libevent_SRC=${WORKDIR}/libevent-2.0.22-stable
 
+export nanomsg_SRC=${WORKDIR}/nanomsg-1.0.0
+
 # the include file of zlog needed attention
 function build_zlog()
 {
@@ -80,7 +82,27 @@ function build_libevent()
     make install
 }
 
+function build_nanomsg()
+{
+    echo "#####################    Build nanomsg   #####################"
+    echo "   "
+    echo "cd ${BUILD_PATH}"
+    cd ${BUILD_PATH}
+    rm -rf *
+    if [ -f ${nanomsg_SRC}/${TARGETMACH}.cmake ]; then
+        cmake -DCMAKE_TOOLCHAIN_FILE=${nanomsg_SRC}/${TARGETMACH}.cmake -DCMAKE_INSTALL_PREFIX=${FINAL_PATH} ${nanomsg_SRC}
+    else
+        cmake -DCMAKE_INSTALL_PREFIX=${FINAL_PATH} ${nanomsg_SRC}
+    fi
+    make
+    make install
+}
+
+build_nanomsg
+
+if false; then
 build_sqlite
 build_zlog
 build_jansson
 #build_curl
+fi
