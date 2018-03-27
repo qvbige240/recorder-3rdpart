@@ -35,7 +35,7 @@ function build_sqlite()
     cd ${BUILD_PATH}
     rm -rf *
     ${sqlite_SRC}/configure --prefix=${FINAL_PATH} --host=$TARGETMACH \
-        enable_threadsafe=yes
+        --with-pic enable_threadsafe=yes
     make
     make install
 }
