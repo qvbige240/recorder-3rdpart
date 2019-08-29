@@ -1,10 +1,20 @@
 #!/bin/bash
 
+BUILDPF=
 WORKDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 echo "WORKDIR: $WORKDIR "
 echo "BUILD_PATH: $BUILD_PATH "
+echo "FINAL_PATH: $FINAL_PATH "
 #echo "${BASH_SOURCE[0]}"
 #echo "$( dirname "${BASH_SOURCE[0]}" )"
+
+if [ ! "$1"x == x ]; then 
+    echo "$1"
+    BUILDPF=$1
+else
+    echo -e "\033[32m       platform unknown      \033[0m"
+    exit -1
+fi
 
 export zlog_SRC=${WORKDIR}/zlog-1.2.7
 export sqlite_SRC=${WORKDIR}/sqlite-autoconf-3190300
@@ -13,6 +23,8 @@ export curl_SRC=${WORKDIR}/curl-7.52.1
 export libevent_SRC=${WORKDIR}/libevent-2.0.22-stable
 
 export nanomsg_SRC=${WORKDIR}/nanomsg-1.0.0
+
+export vpk_SRC=${WORKDIR}/vpk
 
 # the include file of zlog needed attention
 function build_zlog()
@@ -62,7 +74,8 @@ function build_curl()
     cd ${BUILD_PATH}
     rm -rf *
     #${curl_SRC}/configure --prefix=${FINAL_PATH} --host=$TARGETMACH --with-zlib
-    ${curl_SRC}/configure --prefix=${FINAL_PATH} --host=$TARGETMACH --without-zlib 
+    ${curl_SRC}/configure --prefix=${FINAL_PATH} --host=$TARGETMACH \
+        --without-zlib --without-librtmp --disable-symbol-hiding
     make
     make install
 }
@@ -98,11 +111,27 @@ function build_nanomsg()
     make install
 }
 
-build_nanomsg
+function build_vpk()
+{
+    echo "#####################    Build vpk   #####################"
+    echo "   "
+    echo "cd ${BUILD_PATH}"
+    cd ${BUILD_PATH}
+    rm -rf *
+    ${vpk_SRC}/configure --prefix=${FINAL_PATH} --host=$TARGETMACH \
+        platform=$BUILDPF
+    make
+    make install
+}
+
+#build_sqlite
+#build_nanomsg
+#build_curl
+build_vpk
 
 if false; then
 build_sqlite
 build_zlog
 build_jansson
-#build_curl
+build_curl
 fi
