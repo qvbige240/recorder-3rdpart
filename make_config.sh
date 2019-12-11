@@ -20,11 +20,13 @@ export zlog_SRC=${WORKDIR}/zlog-1.2.7
 export sqlite_SRC=${WORKDIR}/sqlite-autoconf-3190300
 export jansson_SRC=${WORKDIR}/jansson-2.10
 export curl_SRC=${WORKDIR}/curl-7.52.1
-export libevent_SRC=${WORKDIR}/libevent-2.0.22-stable
+#export libevent_SRC=${WORKDIR}/libevent-2.0.22-stable
+export libevent_SRC=${WORKDIR}/libevent-2.1.8-stable
 
 export nanomsg_SRC=${WORKDIR}/nanomsg-1.0.0
 
 export vpk_SRC=${WORKDIR}/vpk
+export avc_SRC=${WORKDIR}/timavc
 
 # the include file of zlog needed attention
 function build_zlog()
@@ -89,7 +91,9 @@ function build_libevent()
     rm -rf *
     #cd ${libevent_SRC}
     #${libevent_SRC}/autogen.sh
-    ${libevent_SRC}/configure --prefix=${FINAL_PATH} --host=$TARGETMACH
+    ${libevent_SRC}/configure --prefix=${FINAL_PATH} --host=$TARGETMACH \
+        CPPFLAGS="$GOLBAL_CPPFLAGS" CFLAGS="$GOLBAL_CFLAGS -I${FINAL_PATH}/include" \
+        LDFLAGS="$GOLBAL_LDFLAGS -L${FINAL_PATH}/lib"
     make
     #    make verify
     make install
@@ -124,10 +128,25 @@ function build_vpk()
     make install
 }
 
+function build_avc()
+{
+    echo "#####################    Build avc   #####################"
+    echo "   "
+    echo "cd ${BUILD_PATH}"
+    cd ${BUILD_PATH}
+    rm -rf *
+    ${avc_SRC}/configure --prefix=${FINAL_PATH} --host=$TARGETMACH \
+        platform=$BUILDPF
+    make
+    make install
+}
+
 #build_sqlite
 #build_nanomsg
 #build_curl
-build_vpk
+#build_vpk
+#build_libevent
+build_avc
 
 if false; then
 build_sqlite
