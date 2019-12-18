@@ -92,8 +92,8 @@ function build_libevent()
     #cd ${libevent_SRC}
     #${libevent_SRC}/autogen.sh
     ${libevent_SRC}/configure --prefix=${FINAL_PATH} --host=$TARGETMACH \
-        CPPFLAGS="$GOLBAL_CPPFLAGS" CFLAGS="$GOLBAL_CFLAGS -I${FINAL_PATH}/include" \
-        LDFLAGS="$GOLBAL_LDFLAGS -L${FINAL_PATH}/lib"
+        CPPFLAGS="$GOLBAL_CPPFLAGS" CFLAGS="$GOLBAL_CFLAGS" \
+        LDFLAGS="$GOLBAL_LDFLAGS"
     make
     #    make verify
     make install
@@ -123,7 +123,7 @@ function build_vpk()
     cd ${BUILD_PATH}
     rm -rf *
     ${vpk_SRC}/configure --prefix=${FINAL_PATH} --host=$TARGETMACH \
-        platform=$BUILDPF
+        platform=$BUILDPF --enable-sqlite3
     make
     make install
 }
@@ -144,9 +144,9 @@ function build_avc()
 #build_sqlite
 #build_nanomsg
 #build_curl
-#build_vpk
 #build_libevent
-build_avc
+build_vpk
+#build_avc
 
 if false; then
 build_sqlite
