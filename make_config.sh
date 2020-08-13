@@ -77,7 +77,7 @@ function build_curl()
     rm -rf *
     #${curl_SRC}/configure --prefix=${FINAL_PATH} --host=$TARGETMACH --with-zlib
     ${curl_SRC}/configure --prefix=${FINAL_PATH} --host=$TARGETMACH \
-        --without-zlib --without-librtmp --disable-symbol-hiding
+        --enable-crypto-auth --without-zlib --without-librtmp --disable-symbol-hiding
     make
     make install
 }
